@@ -93,7 +93,10 @@ public class App {
             		case 2:
             			selectStudentByID(connection);
             			break;
-            			
+            		case 3:
+            			updateStudent(connection);
+            		case 4:
+            			deleteStudent(connection);
             	}
                 break;
             case 6:
@@ -171,6 +174,40 @@ public class App {
         		System.out.println(s1 + " " + s2 + " " + s3);
         		// todo replace with string format
         	}
+        	statement.close();
+        }
+        catch (SQLException e) {
+        	
+        }
+    }
+    
+    private static void updateStudent(Connection connection) {
+    	int studentID;
+    	String studentName;
+        int studentYear;
+        studentName = Keyin.inString(" Input new student name: ");
+        studentYear = Keyin.inInt(" Input new student year: ");
+    	studentID = Keyin.inInt(" Input student ID: ");
+    	String query = "update student set studentname=?, studentyear=? where student.studentID=?";
+    	try (var statement = connection.prepareStatement(query);) {
+        	statement.setString(1, studentName);
+        	statement.setInt(2, studentYear);
+        	statement.setInt(3, studentID);
+        	statement.execute();
+        	statement.close();
+        }
+        catch (SQLException e) {
+        	
+        }
+    }
+    
+    private static void deleteStudent(Connection connection) {
+    	int studentID;
+    	studentID = Keyin.inInt(" Input student ID: ");
+    	String query = "delete from student where studentID = ?";
+    	try (var statement = connection.prepareStatement(query);) {
+        	statement.setInt(1, studentID);
+        	statement.execute();
         	statement.close();
         }
         catch (SQLException e) {
