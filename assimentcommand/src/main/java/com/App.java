@@ -4,6 +4,8 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class App {
+	private static String table;
+	private static int operation;
 
 
     // Connect to your database.
@@ -31,20 +33,82 @@ public class App {
         ResultSet resultSet = null;
         Connection connection;
         try {
+        	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             connection = DriverManager.getConnection(connectionUrl);
-
-            selectionmenu0();
-
+            while (true) {
+	            selectOperation();
+	            selectTable(connection);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
             System.exit(1);
         }
+        catch (ClassNotFoundException e) {
+        	e.printStackTrace();
+        	System.exit(1);
+        }
 
 
     }
+    
+    private static void selectTable(Connection connection) {
+    	// Local variable
+        int swValue;
+        
+    	// Display menu graphics
+        System.out.println("============================");
+        System.out.println("|   Menu 2    |");
+        System.out.println("============================");
+        System.out.println("| Options:                  |");
+        System.out.println("|        1. AssignmentType  |");
+        System.out.println("|        2. Course          |");
+        System.out.println("|        3. CourseAssignment|");
+        System.out.println("|        4. Grade           |");
+        System.out.println("|        5. Student         |");
+        System.out.println("|        6. Exit            |");
+        System.out.println("============================");
+        swValue = Keyin.inInt(" Select option: ");
+        
+        // Switch construct
+        switch (swValue) {
+            case 1:
+                table = "AssignmentType";
+                break;
+            case 2:
+                table = "Course";
+                break;
+            case 3:
+                table = "CourseAssignment";
+                break;
+            case 4:
+                table = "Grade";
+                break;
+            case 5:
+                //table = "Student";
+            	switch (operation) {
+            		case 1: 
+            			insertStudent(connection);
+            			break;
+            		case 2:
+            			selectStudentByID(connection);
+            			break;
+            			
+            	}
+                break;
+            case 6:
+                System.out.println("Exit selected");
+                System.exit(0);
+                break;
+            default:
+                System.out.println("Invalid selection");
+                selectTable(connection);
+                break;
 
-    private static void selectionmenu0() {
+        }
+    }
+
+    private static void selectOperation() {
         // Local variable
         int swValue;
 
@@ -52,33 +116,69 @@ public class App {
         System.out.println("============================");
         System.out.println("|   Menu 1    |");
         System.out.println("============================");
-        System.out.println("| Options:                 |");
-        System.out.println("|        1. Option 1       |");
-        System.out.println("|        2. Option 2       |");
-        System.out.println("|        3. Exit           |");
+        System.out.println("| Options:                  |");
+        System.out.println("|        1. INSERT          |");
+        System.out.println("|        2. SELECT          |");
+        System.out.println("|        3. UPDATE          |");
+        System.out.println("|        4. DELETE          |");
+        System.out.println("|        5. Exit            |");
         System.out.println("============================");
         swValue = Keyin.inInt(" Select option: ");
 
-        // Switch construct
-        switch (swValue) {
-            case 1:
-                System.out.println("Option 1 selected");
-                break;
-            case 2:
-                System.out.println("Option 2 selected");
-                break;
-            case 3:
-                System.out.println("Exit selected");
-                System.exit(0);
-                break;
-            default:
-                System.out.println("Invalid selection");
-                break; // This break is not really necessary
-
+        if (swValue > 0 && swValue < 5) {
+        	operation = swValue;
+        }
+        else if (swValue == 5) {
+            System.out.println("Exit selected");
+            System.exit(0);
+        }
+        else {
+            System.out.println("Invalid selection");
+            selectOperation();
         }
 
-
     }
+    
+    private static void insertStudent(Connection connection) {
+    	// Local variable
+        String studentName;
+        int studentYear;
+        studentName = Keyin.inString(" Input student name: ");
+        studentYear = Keyin.inInt(" Input student year: ");
+        String query = "insert into Student(studentname, studentyear) values (?, ?);";
+        try (var statement = connection.prepareStatement(query);) {
+        	statement.setString(1, studentName);
+        	statement.setInt(2, studentYear);
+        	statement.execute();
+        	statement.close();
+        }
+        catch (SQLException e) {
+        	
+        }
+    }
+    
+    private static void selectStudentByID(Connection connection) {
+    	int studentID;
+    	studentID = Keyin.inInt(" Input student ID: ");
+    	String query = "select * from student where student.studentID = ?";
+    	try (var statement = connection.prepareStatement(query);) {
+        	statement.setInt(1, studentID);
+        	ResultSet set = statement.executeQuery();
+        	while (set.next()) {
+        		String s1 = set.getString("studentID");
+        		String s2 = set.getString("studentName");
+        		String s3 = set.getString("studentYear");
+        		System.out.println(s1 + " " + s2 + " " + s3);
+        		// todo replace with string format
+        	}
+        	statement.close();
+        }
+        catch (SQLException e) {
+        	
+        }
+    }
+    
+    
     private static void selectionmenu2() {
         // Local variable
         int swValue;
