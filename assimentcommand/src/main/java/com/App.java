@@ -59,9 +59,9 @@ public class App {
         int swValue;
         
     	// Display menu graphics
-        System.out.println("=================================");
+        System.out.println("--------------------------------=");
         System.out.println("|   Menu 2                      |");
-        System.out.println("=================================");
+        System.out.println("|-------------------------------|");
         System.out.println("| Options:                      |");
         System.out.println("|        1. AssignmentType      |");
         System.out.println("|        2. Course              |");
@@ -69,7 +69,7 @@ public class App {
         System.out.println("|        4. Grade               |");
         System.out.println("|        5. Student             |");
         System.out.println("|        6. Back                |");
-        System.out.println("=================================");
+        System.out.println("---------------------------------");
         swValue = Keyin.inInt(" Select option: ");
         
         // Switch construct
@@ -120,9 +120,9 @@ public class App {
         int swValue;
 
         // Display menu graphics
-        System.out.println("=================================");
+        System.out.println("---------------------------------");
         System.out.println("|   Menu 1                      |");
-        System.out.println("=================================");
+        System.out.println("|-------------------------------|");
         System.out.println("| Options:                      |");
         System.out.println("|        1. INSERT              |");
         System.out.println("|        2. SELECT              |");
@@ -130,7 +130,7 @@ public class App {
         System.out.println("|        4. DELETE              |");
         System.out.println("|        5. Save & Exit         |");
         System.out.println("|        6. Exit without Saving |");
-        System.out.println("=================================");
+        System.out.println("---------------------------------");
         swValue = Keyin.inInt(" Select option: ");
 
         if (swValue > 0 && swValue < 5) {
@@ -329,7 +329,6 @@ public class App {
                 break; // This break is not really necessary
 
         }
-
 
     }
 
