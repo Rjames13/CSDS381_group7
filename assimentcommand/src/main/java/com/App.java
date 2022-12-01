@@ -32,11 +32,13 @@ public class App {
 
         ResultSet resultSet = null;
         Connection connection;
+
         try {
         	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             connection = DriverManager.getConnection(connectionUrl);
+            connection.setAutoCommit(false);
             while (true) {
-	            selectOperation();
+	            selectOperation(connection);
 	            selectTable(connection);
             }
 
@@ -57,17 +59,17 @@ public class App {
         int swValue;
         
     	// Display menu graphics
-        System.out.println("============================");
-        System.out.println("|   Menu 2    |");
-        System.out.println("============================");
-        System.out.println("| Options:                  |");
-        System.out.println("|        1. AssignmentType  |");
-        System.out.println("|        2. Course          |");
-        System.out.println("|        3. CourseAssignment|");
-        System.out.println("|        4. Grade           |");
-        System.out.println("|        5. Student         |");
-        System.out.println("|        6. Exit            |");
-        System.out.println("============================");
+        System.out.println("=================================");
+        System.out.println("|   Menu 2                      |");
+        System.out.println("=================================");
+        System.out.println("| Options:                      |");
+        System.out.println("|        1. AssignmentType      |");
+        System.out.println("|        2. Course              |");
+        System.out.println("|        3. CourseAssignment    |");
+        System.out.println("|        4. Grade               |");
+        System.out.println("|        5. Student             |");
+        System.out.println("|        6. Back                |");
+        System.out.println("=================================");
         swValue = Keyin.inInt(" Select option: ");
         
         // Switch construct
@@ -100,9 +102,11 @@ public class App {
             	}
                 break;
             case 6:
-                System.out.println("Exit selected");
-                System.exit(0);
+                System.out.println("Back selected");
+
                 break;
+
+
             default:
                 System.out.println("Invalid selection");
                 selectTable(connection);
@@ -111,21 +115,22 @@ public class App {
         }
     }
 
-    private static void selectOperation() {
+    private static void selectOperation(Connection connection) {
         // Local variable
         int swValue;
 
         // Display menu graphics
-        System.out.println("============================");
-        System.out.println("|   Menu 1    |");
-        System.out.println("============================");
-        System.out.println("| Options:                  |");
-        System.out.println("|        1. INSERT          |");
-        System.out.println("|        2. SELECT          |");
-        System.out.println("|        3. UPDATE          |");
-        System.out.println("|        4. DELETE          |");
-        System.out.println("|        5. Exit            |");
-        System.out.println("============================");
+        System.out.println("=================================");
+        System.out.println("|   Menu 1                      |");
+        System.out.println("=================================");
+        System.out.println("| Options:                      |");
+        System.out.println("|        1. INSERT              |");
+        System.out.println("|        2. SELECT              |");
+        System.out.println("|        3. UPDATE              |");
+        System.out.println("|        4. DELETE              |");
+        System.out.println("|        5. Save & Exit         |");
+        System.out.println("|        6. Exit without Saving |");
+        System.out.println("=================================");
         swValue = Keyin.inInt(" Select option: ");
 
         if (swValue > 0 && swValue < 5) {
@@ -133,11 +138,31 @@ public class App {
         }
         else if (swValue == 5) {
             System.out.println("Exit selected");
+            try {
+                connection.commit();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+
+            System.exit(0);
+        }
+        else if (swValue == 6) {
+            System.out.println("Exit selected");
+            try {
+                connection.rollback();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+
             System.exit(0);
         }
         else {
             System.out.println("Invalid selection");
-            selectOperation();
+            selectOperation(connection);
         }
 
     }
@@ -162,11 +187,13 @@ public class App {
     
     private static void selectStudentByID(Connection connection) {
     	int studentID;
-    	studentID = Keyin.inInt(" Input student ID: ");
+    	studentID = Keyin.inInt(" Input student ID(-1 to see all student): ");
+        if (studentID>0){
     	String query = "select * from student where student.studentID = ?";
     	try (var statement = connection.prepareStatement(query);) {
         	statement.setInt(1, studentID);
         	ResultSet set = statement.executeQuery();
+            System.out.println("ID Name Year");
         	while (set.next()) {
         		String s1 = set.getString("studentID");
         		String s2 = set.getString("studentName");
@@ -178,7 +205,26 @@ public class App {
         }
         catch (SQLException e) {
         	
-        }
+        }}
+        else if (studentID<0){
+            String query = "select * from student ";
+            try (var statement = connection.prepareStatement(query);) {
+
+                ResultSet set = statement.executeQuery();
+                System.out.println("ID Name Year");
+                while (set.next()) {
+                    String s1 = set.getString("studentID");
+                    String s2 = set.getString("studentName");
+                    String s3 = set.getString("studentYear");
+                    System.out.println(s1 + " " + s2 + " " + s3);
+                    // todo replace with string format
+                }
+                statement.close();
+            }
+            catch (SQLException e) {
+
+            }}
+
     }
     
     private static void updateStudent(Connection connection) {
@@ -257,7 +303,7 @@ public class App {
 
         // Display menu graphics
         System.out.println("============================");
-        System.out.println("|   Menu 1    |");
+        System.out.println("|   Menu 3    |");
         System.out.println("============================");
         System.out.println("| Options:                 |");
         System.out.println("|        1. Option 1       |");
