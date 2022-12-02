@@ -65,11 +65,12 @@ public class App {
         System.out.println("|        1. Get Student Assignment            ");
         System.out.println("|        2. Change Grade for Task            ");
         System.out.println("|        3. Get Students Stats for Tasks             ");
-        System.out.println("|        5. Add Student to System            ");
-        System.out.println("|        6. Apply Late Penalty of overdue Tasks             ");
-        System.out.println("|        7. Grade Partner Assignment");
-        System.out.println("|        8. DELETE          ");
-        System.out.println("|        9. DELETE         ");
+        System.out.println("|        4. Add Student to System            ");
+        System.out.println("|        5. Apply Late Penalty of overdue Tasks             ");
+        System.out.println("|        6. Grade Partner Assignment");
+        System.out.println("|        7. DELETE          ");
+        System.out.println("|        8. DELETE         ");
+        System.out.println("|        9. DELETE           ");
         System.out.println("|        10. DELETE           ");
         System.out.println("|        11. Save & Exit         |");
         System.out.println("|        12. Exit without Saving |");
@@ -83,10 +84,12 @@ public class App {
                 break;
             case 2:
                 changeGrade(connection);
+                break;
             case 3:
                 studentStats(connection);
+                break;
             case 4:
-                table = "Grade";
+                addStudent(connection);
                 break;
             case 11:
                 System.out.println("Exit selected");
@@ -162,7 +165,7 @@ public class App {
     private static void changeGrade(Connection connection) {
         int id= InputTool.inInt("Student ID:");
         int task= InputTool.inInt("Task ID:");
-        double points= InputTool.inDouble("Task ID:");
+        double points= InputTool.inDouble("New Grade:");
 
 
         String callStoredProc = "{call dbo.dropScore(?,?,?)}";
@@ -227,6 +230,94 @@ public class App {
         }
 
     }
+
+
+    private static void addStudent(Connection connection) {
+        String name= InputTool.inString("Student Name:");
+        int year= InputTool.inInt("Year:");
+
+
+
+        String callStoredProc = "{call dbo.InsertStudent(?,?)}";
+        CallableStatement prepsStoredProc = null;
+        try {
+            prepsStoredProc = connection.prepareCall(callStoredProc);
+
+
+            // 4 parameters to stored proc start with a parameter index of 1
+            prepsStoredProc.setString(1, name);
+            prepsStoredProc.setInt(2, year);
+
+            ResultSet set = prepsStoredProc.executeQuery();
+            prepsStoredProc.close();
+            System.out.println("Student Add");
+
+        }
+        // Handle any errors that may have occurred.
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private static void latepenalty(Connection connection) {
+        int id= InputTool.inInt("Student ID:");
+        int task= InputTool.inInt("Task ID:");
+        double points= InputTool.inDouble("Late penalty in points:");
+
+
+        String callStoredProc = "{call dbo.latPenalty(?,?,?)}";
+        CallableStatement prepsStoredProc = null;
+        try {
+            prepsStoredProc = connection.prepareCall(callStoredProc);
+
+
+            // 4 parameters to stored proc start with a parameter index of 1
+            prepsStoredProc.setInt(1, id);
+            prepsStoredProc.setInt(2, task);
+            prepsStoredProc.setDouble(3, points);
+            ResultSet set = prepsStoredProc.executeQuery();
+            prepsStoredProc.close();
+            System.out.println("Score Updated");
+
+        }
+        // Handle any errors that may have occurred.
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private static void updatepartnerScore(Connection connection) {
+        int id= InputTool.inInt("First Student ID:");
+        int id2= InputTool.inInt("Second Student ID:");
+        int task= InputTool.inInt("Task ID:");
+        double points= InputTool.inDouble("Late penalty in points:");
+
+
+        String callStoredProc = "{call dbo.updatePartnerScore(?,?,?,?)}";
+        CallableStatement prepsStoredProc = null;
+        try {
+            prepsStoredProc = connection.prepareCall(callStoredProc);
+
+
+            // 4 parameters to stored proc start with a parameter index of 1
+            prepsStoredProc.setInt(1, id);
+            prepsStoredProc.setInt(2, id);
+            prepsStoredProc.setInt(3, task);
+            prepsStoredProc.setDouble(4, points);
+            ResultSet set = prepsStoredProc.executeQuery();
+            prepsStoredProc.close();
+            System.out.println("Score Updated");
+
+        }
+        // Handle any errors that may have occurred.
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }
     class InputTool {
 
