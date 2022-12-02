@@ -160,6 +160,75 @@ public class App {
 
     }
 
+
+    private static void changeGrade(Connection connection) {
+        int id= InputTool.inInt("Student ID:");
+        int task= InputTool.inInt("Task ID:");
+        double points= InputTool.inDouble("Task ID:");
+
+
+        String callStoredProc = "{call dbo.dropScore(?,?,?)}";
+        CallableStatement prepsStoredProc = null;
+        try {
+            prepsStoredProc = connection.prepareCall(callStoredProc);
+
+
+            // 4 parameters to stored proc start with a parameter index of 1
+            prepsStoredProc.setInt(1, id);
+            prepsStoredProc.setInt(2, task);
+            prepsStoredProc.setDouble(3, points);
+            ResultSet set = prepsStoredProc.executeQuery();
+            prepsStoredProc.close();
+            System.out.println("Score Updated");
+
+        }
+        // Handle any errors that may have occurred.
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+
+    private static void studentStats(Connection connection) {
+        int id= InputTool.inInt("Student ID:");
+
+
+
+        String callStoredProc = "{call dbo.dropScore(?)}";
+        CallableStatement prepsStoredProc = null;
+        try {
+            prepsStoredProc = connection.prepareCall(callStoredProc);
+
+
+            // 4 parameters to stored proc start with a parameter index of 1
+            prepsStoredProc.setInt(1, id);
+
+            ResultSet set = prepsStoredProc.executeQuery();
+            System.out.println("ID Name Year");
+            while (set.next()) {
+                String s1 = set.getString("studentID");
+                String s2 = set.getString("studentName");
+                String s3 = set.getString("Minimum");
+                String s4 = set.getString("Unweighted Average");
+                String s5 = set.getString("Maximum");
+                String s6 = set.getString("assDueDate");
+                System.out.println(s1 + " " + s2 + " " + s3+" " +s4 + " " + s5 + " " + s6);
+                // todo replace with string format
+            }
+
+            prepsStoredProc.close();
+            System.out.println("Score Updated");
+
+        }
+        // Handle any errors that may have occurred.
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
     class InputTool {
 
