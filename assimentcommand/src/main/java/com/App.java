@@ -91,6 +91,12 @@ public class App {
             case 4:
                 addStudent(connection);
                 break;
+            case 5:
+                latepenalty(connection);
+                break;
+            case 6:
+                updatepartnerScore(connection);
+                break;
             case 11:
                 System.out.println("Exit selected");
                 try {
