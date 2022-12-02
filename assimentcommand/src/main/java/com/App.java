@@ -272,7 +272,7 @@ public class App {
         double points= InputTool.inDouble("Late penalty in points:");
 
 
-        String callStoredProc = "{call dbo.latPenalty(?,?,?)}";
+        String callStoredProc = "{call dbo.latePenalty(?,?,?)}";
         CallableStatement prepsStoredProc = null;
         try {
             prepsStoredProc = connection.prepareCall(callStoredProc);
