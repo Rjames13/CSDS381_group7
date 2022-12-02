@@ -184,7 +184,7 @@ public class App {
             prepsStoredProc.setInt(1, id);
             prepsStoredProc.setInt(2, task);
             prepsStoredProc.setDouble(3, points);
-            ResultSet set = prepsStoredProc.executeQuery();
+            prepsStoredProc.execute();
             prepsStoredProc.close();
             System.out.println("Score Updated");
 
@@ -254,7 +254,7 @@ public class App {
             prepsStoredProc.setString(1, name);
             prepsStoredProc.setInt(2, year);
 
-            ResultSet set = prepsStoredProc.executeQuery();
+            prepsStoredProc.execute();
             prepsStoredProc.close();
             System.out.println("Student Add");
 
@@ -282,7 +282,7 @@ public class App {
             prepsStoredProc.setInt(1, id);
             prepsStoredProc.setInt(2, task);
             prepsStoredProc.setDouble(3, points);
-            ResultSet set = prepsStoredProc.executeQuery();
+            prepsStoredProc.execute();
             prepsStoredProc.close();
             System.out.println("Score Updated");
 
@@ -312,7 +312,7 @@ public class App {
             prepsStoredProc.setInt(2, id);
             prepsStoredProc.setInt(3, task);
             prepsStoredProc.setDouble(4, points);
-            ResultSet set = prepsStoredProc.executeQuery();
+             prepsStoredProc.execute();
             prepsStoredProc.close();
             System.out.println("Score Updated");
 
