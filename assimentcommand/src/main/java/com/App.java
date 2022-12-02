@@ -4,8 +4,8 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class App {
-	private static String table;
-	private static int operation;
+    private static String table;
+    private static int operation;
 
 
     // Connect to your database.
@@ -34,25 +34,241 @@ public class App {
         Connection connection;
 
         try {
-        	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             connection = DriverManager.getConnection(connectionUrl);
             connection.setAutoCommit(false);
             while (true) {
-	            selectOperation(connection);
-	            selectTable(connection);
+                selectUseCase(connection);
+
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
             System.exit(1);
-        }
-        catch (ClassNotFoundException e) {
-        	e.printStackTrace();
-        	System.exit(1);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            System.exit(1);
         }
 
 
     }
+
+    private static void selectUseCase(Connection connection) {
+        // Local variable
+        int swValue;
+
+        // Display menu graphics //TODO make look nice
+        System.out.println("---------------------------------");
+        System.out.println("|   Menu 1                      |");
+        System.out.println("|-------------------------------|");
+        System.out.println("| Options:                      |");
+        System.out.println("|        1. Get Student Assignment            |");
+        System.out.println("|        2. SELECT              |");
+        System.out.println("|        3. UPDATE              |");
+        System.out.println("|        5. DELETE              |");
+        System.out.println("|        6. DELETE              |");
+        System.out.println("|        7. DELETE              |");
+        System.out.println("|        8. DELETE              |");
+        System.out.println("|        9. DELETE              |");
+        System.out.println("|        10. DELETE              |");
+        System.out.println("|        11. Save & Exit         |");
+        System.out.println("|        12. Exit without Saving |");
+        System.out.println("---------------------------------");
+        swValue = InputTool.inInt(" Select option: ");
+
+
+        switch (swValue) {
+            case 1:
+                getStudentAssignment(connection);
+                break;
+            case 2:
+                table = "Course";
+                break;
+            case 3:
+                table = "CourseAssignment";
+                break;
+            case 4:
+                table = "Grade";
+                break;
+            case 5:
+                System.out.println("Exit selected");
+                try {
+                    connection.commit();
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+
+                System.exit(0);
+                break;
+            case 6:
+                System.out.println("Exit selected");
+                try {
+                    connection.rollback();
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+
+                System.exit(0);
+
+
+            default:
+                System.out.println("Invalid selection");
+                selectUseCase(connection);
+                break;
+
+        }
+
+
+    }
+
+    private static void getStudentAssignment(Connection connection) {
+       int id= InputTool.inInt("Student ID:");
+       String date= InputTool.inString("Date to check by:");
+       String callStoredProc = "{call dbo.getToDoForStudent(?,?)}";
+        CallableStatement prepsStoredProc = null;
+        try {
+            prepsStoredProc = connection.prepareCall(callStoredProc);
+
+
+            // 4 parameters to stored proc start with a parameter index of 1
+            prepsStoredProc.setInt(1, id);
+            prepsStoredProc.setString(2, date);
+
+            ResultSet set = prepsStoredProc.executeQuery();
+            System.out.println("ID Name Year");
+            while (set.next()) {
+                String s1 = set.getString("studentID");
+                String s2 = set.getString("studentName");
+                String s3 = set.getString("taskDescription");
+                String s4 = set.getString("assName");
+                String s5 = set.getString("assDescription");
+                String s6 = set.getString("assDueDate");
+                System.out.println(s1 + " " + s2 + " " + s3+" " +s4 + " " + s5 + " " + s6);
+                // todo replace with string format
+            }
+            prepsStoredProc.close();
+
+        }
+        // Handle any errors that may have occurred.
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+}
+    class InputTool {
+
+        //*******************************
+        //   support methods
+        //*******************************
+        //Method to display the user's prompt string
+        public static void printPrompt(String prompt) {
+            System.out.print(prompt + " ");
+            System.out.flush();
+        }
+
+        //Method to make sure no data is available in the
+        //input stream
+        public static void inputFlush() {
+            int dummy;
+            int bAvail;
+
+            try {
+                while ((System.in.available()) != 0)
+                    dummy = System.in.read();
+            } catch (java.io.IOException e) {
+                System.out.println("Input error");
+            }
+        }
+
+        //********************************
+        //  data input methods for
+        //string, int, char, and double
+        //********************************
+        public static String inString(String prompt) {
+            inputFlush();
+            printPrompt(prompt);
+            return inString();
+        }
+
+        public static String inString() {
+            int aChar;
+            String s = "";
+            boolean finished = false;
+
+            while (!finished) {
+                try {
+                    aChar = System.in.read();
+                    if (aChar < 0 || (char) aChar == '\n')
+                        finished = true;
+                    else if ((char) aChar != '\r')
+                        s = s + (char) aChar; // Enter into string
+                } catch (java.io.IOException e) {
+                    System.out.println("Input error");
+                    finished = true;
+                }
+            }
+            return s;
+        }
+
+        public static int inInt(String prompt) {
+            while (true) {
+                inputFlush();
+                printPrompt(prompt);
+                try {
+                    return Integer.valueOf(inString().trim()).intValue();
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Not an integer");
+                }
+            }
+        }
+
+        public static char inChar(String prompt) {
+            int aChar = 0;
+
+            inputFlush();
+            printPrompt(prompt);
+
+            try {
+                aChar = System.in.read();
+            } catch (java.io.IOException e) {
+                System.out.println("Input error");
+            }
+            inputFlush();
+            return (char) aChar;
+        }
+
+        public static double inDouble(String prompt) {
+            while (true) {
+                inputFlush();
+                printPrompt(prompt);
+                try {
+                    return Double.valueOf(inString().trim()).doubleValue();
+                } catch (NumberFormatException e) {
+                    System.out
+                            .println("Invalid input. Not a floating point number");
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+/*
+
+    // old stuff that may still be useful
     
     private static void selectTable(Connection connection) {
     	// Local variable
@@ -115,57 +331,6 @@ public class App {
         }
     }
 
-    private static void selectOperation(Connection connection) {
-        // Local variable
-        int swValue;
-
-        // Display menu graphics
-        System.out.println("---------------------------------");
-        System.out.println("|   Menu 1                      |");
-        System.out.println("|-------------------------------|");
-        System.out.println("| Options:                      |");
-        System.out.println("|        1. INSERT              |");
-        System.out.println("|        2. SELECT              |");
-        System.out.println("|        3. UPDATE              |");
-        System.out.println("|        4. DELETE              |");
-        System.out.println("|        5. Save & Exit         |");
-        System.out.println("|        6. Exit without Saving |");
-        System.out.println("---------------------------------");
-        swValue = Keyin.inInt(" Select option: ");
-
-        if (swValue > 0 && swValue < 5) {
-        	operation = swValue;
-        }
-        else if (swValue == 5) {
-            System.out.println("Exit selected");
-            try {
-                connection.commit();
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.exit(1);
-            }
-
-            System.exit(0);
-        }
-        else if (swValue == 6) {
-            System.out.println("Exit selected");
-            try {
-                connection.rollback();
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.exit(1);
-            }
-
-            System.exit(0);
-        }
-        else {
-            System.out.println("Invalid selection");
-            selectOperation(connection);
-        }
-
-    }
     
     private static void insertStudent(Connection connection) {
     	// Local variable
@@ -330,103 +495,9 @@ public class App {
 
         }
 
-    }
+    }*/
 
 
-}
 
-class Keyin {
 
-    //*******************************
-    //   support methods
-    //*******************************
-    //Method to display the user's prompt string
-    public static void printPrompt(String prompt) {
-        System.out.print(prompt + " ");
-        System.out.flush();
-    }
 
-    //Method to make sure no data is available in the
-    //input stream
-    public static void inputFlush() {
-        int dummy;
-        int bAvail;
-
-        try {
-            while ((System.in.available()) != 0)
-                dummy = System.in.read();
-        } catch (java.io.IOException e) {
-            System.out.println("Input error");
-        }
-    }
-
-    //********************************
-    //  data input methods for
-    //string, int, char, and double
-    //********************************
-    public static String inString(String prompt) {
-        inputFlush();
-        printPrompt(prompt);
-        return inString();
-    }
-
-    public static String inString() {
-        int aChar;
-        String s = "";
-        boolean finished = false;
-
-        while (!finished) {
-            try {
-                aChar = System.in.read();
-                if (aChar < 0 || (char) aChar == '\n')
-                    finished = true;
-                else if ((char) aChar != '\r')
-                    s = s + (char) aChar; // Enter into string
-            } catch (java.io.IOException e) {
-                System.out.println("Input error");
-                finished = true;
-            }
-        }
-        return s;
-    }
-
-    public static int inInt(String prompt) {
-        while (true) {
-            inputFlush();
-            printPrompt(prompt);
-            try {
-                return Integer.valueOf(inString().trim()).intValue();
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Not an integer");
-            }
-        }
-    }
-
-    public static char inChar(String prompt) {
-        int aChar = 0;
-
-        inputFlush();
-        printPrompt(prompt);
-
-        try {
-            aChar = System.in.read();
-        } catch (java.io.IOException e) {
-            System.out.println("Input error");
-        }
-        inputFlush();
-        return (char) aChar;
-    }
-
-    public static double inDouble(String prompt) {
-        while (true) {
-            inputFlush();
-            printPrompt(prompt);
-            try {
-                return Double.valueOf(inString().trim()).doubleValue();
-            } catch (NumberFormatException e) {
-                System.out
-                        .println("Invalid input. Not a floating point number");
-            }
-        }
-    }
-}
