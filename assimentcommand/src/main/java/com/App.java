@@ -58,19 +58,19 @@ public class App {
         int swValue;
 
         // Display menu graphics //TODO make look nice
-        System.out.println("---------------------------------");
+
         System.out.println("|   Menu 1                      |");
-        System.out.println("|-------------------------------|");
+
         System.out.println("| Options:                      |");
-        System.out.println("|        1. Get Student Assignment            |");
-        System.out.println("|        2. SELECT              |");
-        System.out.println("|        3. UPDATE              |");
-        System.out.println("|        5. DELETE              |");
-        System.out.println("|        6. DELETE              |");
-        System.out.println("|        7. DELETE              |");
-        System.out.println("|        8. DELETE              |");
-        System.out.println("|        9. DELETE              |");
-        System.out.println("|        10. DELETE              |");
+        System.out.println("|        1. Get Student Assignment            ");
+        System.out.println("|        2. Change Grade for Task            ");
+        System.out.println("|        3. Get Students Stats for Tasks             ");
+        System.out.println("|        5. Add Student to System            ");
+        System.out.println("|        6. Apply Late Penalty of overdue Tasks             ");
+        System.out.println("|        7. Grade Partner Assignment");
+        System.out.println("|        8. DELETE          ");
+        System.out.println("|        9. DELETE         ");
+        System.out.println("|        10. DELETE           ");
         System.out.println("|        11. Save & Exit         |");
         System.out.println("|        12. Exit without Saving |");
         System.out.println("---------------------------------");
