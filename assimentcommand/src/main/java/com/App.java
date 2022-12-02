@@ -197,7 +197,7 @@ public class App {
 
 
 
-        String callStoredProc = "{call dbo.dropScore(?)}";
+        String callStoredProc = "{call dbo.getGradeForStudent(?)}";
         CallableStatement prepsStoredProc = null;
         try {
             prepsStoredProc = connection.prepareCall(callStoredProc);
