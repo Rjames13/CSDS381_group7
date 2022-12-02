@@ -82,15 +82,13 @@ public class App {
                 getStudentAssignment(connection);
                 break;
             case 2:
-                table = "Course";
-                break;
+                changeGrade(connection);
             case 3:
-                table = "CourseAssignment";
-                break;
+                studentStats(connection);
             case 4:
                 table = "Grade";
                 break;
-            case 5:
+            case 11:
                 System.out.println("Exit selected");
                 try {
                     connection.commit();
@@ -102,7 +100,7 @@ public class App {
 
                 System.exit(0);
                 break;
-            case 6:
+            case 12:
                 System.out.println("Exit selected");
                 try {
                     connection.rollback();
@@ -214,8 +212,8 @@ public class App {
                 String s3 = set.getString("Minimum");
                 String s4 = set.getString("Unweighted Average");
                 String s5 = set.getString("Maximum");
-                String s6 = set.getString("assDueDate");
-                System.out.println(s1 + " " + s2 + " " + s3+" " +s4 + " " + s5 + " " + s6);
+
+                System.out.println(s1 + " " + s2 + " " + s3+" " +s4 + " " + s5 );
                 // todo replace with string format
             }
 
