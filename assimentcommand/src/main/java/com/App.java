@@ -21,13 +21,15 @@ public class App {
         String password = myObj.nextLine();  // Read user input
 
         String connectionUrl =
-                "jdbc:sqlserver://robin-amd.STUDENT.CWRU.EDU:1433;"
-                        + "database=assignments;"
+                "jdbc:sqlserver://localhost;"
+                        + "database=ClassBox;"
                         + "user=" + userName + ";"
                         + "password=" + password + ";"
                         + "encrypt=true;"
                         + "trustServerCertificate=true;"
                         + "loginTimeout=30;";
+
+
 
 
         ResultSet resultSet = null;
