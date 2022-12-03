@@ -69,7 +69,7 @@ public class App {
         System.out.println("|        5. Apply Late Penalty of overdue Tasks             ");
         System.out.println("|        6. Grade Partner Assignment");
         System.out.println("|        7. Drop Low Score         ");
-        System.out.println("|        8. DELETE         ");
+        System.out.println("|        8. Update TA Course         ");
         System.out.println("|        9. DELETE           ");
         System.out.println("|        10. DELETE           ");
         System.out.println("|        11. Save & Exit         |");
@@ -100,6 +100,9 @@ public class App {
             case 7:
                 dropscore(connection);
                 break;
+            case 8:
+            	updateTACourse(connection);
+            	break;
             case 11:
                 System.out.println("Exit selected");
                 try {
@@ -133,6 +136,33 @@ public class App {
         }
 
 
+    }
+    
+    private static void updateTACourse(Connection connection) {
+    	int id= InputTool.inInt("TA ID:");
+        int oldCourse= InputTool.inInt("Old Course ID:");
+        int newCourse= InputTool.inInt("New Course ID:");
+
+
+        String callStoredProc = "{call dbo.updateTACourse(?,?,?)}";
+        CallableStatement prepsStoredProc = null;
+        try {
+            prepsStoredProc = connection.prepareCall(callStoredProc);
+
+
+            // 3 parameters to stored proc start with a parameter index of 1
+            prepsStoredProc.setInt(1, id);
+            prepsStoredProc.setInt(2, oldCourse);
+            prepsStoredProc.setInt(3, newCourse);
+             prepsStoredProc.execute();
+             prepsStoredProc.close();
+            System.out.println("TA Course Updated");
+
+        }
+        // Handle any errors that may have occurred.
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void getStudentAssignment(Connection connection) {
