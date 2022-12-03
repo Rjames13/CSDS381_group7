@@ -71,7 +71,7 @@ public class App {
         System.out.println("|        7. Drop Low Score         ");
         System.out.println("|        8. Update TA Course         ");
         System.out.println("|        9. Delete failed students           ");
-        System.out.println("|        10. DELETE           ");
+        System.out.println("|        10. Drop all courses for a student           ");
         System.out.println("|        11. Save & Exit         |");
         System.out.println("|        12. Exit without Saving |");
         System.out.println("---------------------------------");
@@ -107,6 +107,7 @@ public class App {
             	removeFailed(connection);
             	break;
             case 10:
+                dropAllCouses(connection);
             	break;
             case 11:
                 System.out.println("Exit selected");
@@ -143,6 +144,28 @@ public class App {
 
     }
     
+    private static void dropAllCourses(Connection connection) {
+        int studentID = InputTool.inInt("Student ID:");
+
+        String callStoredProc = "{call dbo.dropAllCourses(?)}";
+        CallableStatement prepsStoredProc = null;
+        try {
+            prepsStoredProc = connection.prepareCall(callStoredProc);
+
+            // 1 parameter to stored proc start with a parameter index of 1
+            prepsStoredProc.setInt(1, studentID);
+             prepsStoredProc.execute();
+             prepsStoredProc.close();
+            System.out.println("All courses dropped");
+        }
+        // Handle any errors that may have occurred.
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
     private static void updateTACourse(Connection connection) {
     	int id= InputTool.inInt("TA ID:");
         int oldCourse= InputTool.inInt("Old Course ID:");
