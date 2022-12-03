@@ -107,7 +107,7 @@ public class App {
             	removeFailed(connection);
             	break;
             case 10:
-                dropAllCouses(connection);
+                dropAllClasses(connection);
             	break;
             case 11:
                 System.out.println("Exit selected");
@@ -144,10 +144,10 @@ public class App {
 
     }
     
-    private static void dropAllCourses(Connection connection) {
+    private static void dropAllClasses(Connection connection) {
         int studentID = InputTool.inInt("Student ID:");
 
-        String callStoredProc = "{call dbo.dropAllCourses(?)}";
+        String callStoredProc = "{call dbo.dropAllClasses(?)}";
         CallableStatement prepsStoredProc = null;
         try {
             prepsStoredProc = connection.prepareCall(callStoredProc);
