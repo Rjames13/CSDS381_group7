@@ -75,7 +75,7 @@ public class App {
         System.out.println("|        11. Save & Exit         |");
         System.out.println("|        12. Exit without Saving |");
         System.out.println("---------------------------------");
-        swValue = InputTool.inInt(" Select option: ");
+        swValue = InputTool.getasInt(" Select option: ");
 
 
         switch (swValue) {
@@ -145,7 +145,7 @@ public class App {
     }
     
     private static void dropAllClasses(Connection connection) {
-        int studentID = InputTool.inInt("Student ID:");
+        int studentID = InputTool.getasInt("Student ID:");
 
         String callStoredProc = "{call dbo.dropAllClasses(?)}";
         CallableStatement prepsStoredProc = null;
@@ -167,9 +167,9 @@ public class App {
 
 
     private static void updateTACourse(Connection connection) {
-    	int id= InputTool.inInt("TA ID:");
-        int oldCourse= InputTool.inInt("Old Course ID:");
-        int newCourse= InputTool.inInt("New Course ID:");
+    	int id= InputTool.getasInt("TA ID:");
+        int oldCourse= InputTool.getasInt("Old Course ID:");
+        int newCourse= InputTool.getasInt("New Course ID:");
 
 
         String callStoredProc = "{call dbo.updateTACourse(?,?,?)}";
@@ -194,7 +194,7 @@ public class App {
     }
     
     private static void removeFailed(Connection connection) {
-        int lowScore= InputTool.inInt("Failing Score:");
+        int lowScore= InputTool.getasInt("Failing Score:");
         String callStoredProc = "{call dbo.removeFails(?)}";
         CallableStatement prepsStoredProc = null;
         try {
@@ -217,8 +217,8 @@ public class App {
     }
 
     private static void getStudentAssignment(Connection connection) {
-       int id= InputTool.inInt("Student ID:");
-       String date= InputTool.inString("Date to check by:");
+       int id= InputTool.getasInt("Student ID:");
+       String date= InputTool.getasString("Date to check by:");
        String callStoredProc = "{call dbo.getToDoForStudent(?,?)}";
         CallableStatement prepsStoredProc = null;
         try {
@@ -253,9 +253,9 @@ public class App {
 
 
     private static void changeGrade(Connection connection) {
-        int id= InputTool.inInt("Student ID:");
-        int task= InputTool.inInt("Task ID:");
-        double points= InputTool.inDouble("New Grade:");
+        int id= InputTool.getasInt("Student ID:");
+        int task= InputTool.getasInt("Task ID:");
+        double points= InputTool.getasDouble("New Grade:");
 
 
         String callStoredProc = "{call dbo.dropScore(?,?,?)}";
@@ -284,7 +284,7 @@ public class App {
 
 
     private static void studentStats(Connection connection) {
-        int id= InputTool.inInt("Student ID:");
+        int id= InputTool.getasInt("Student ID:");
 
 
 
@@ -323,8 +323,8 @@ public class App {
 
 
     private static void addStudent(Connection connection) {
-        String name= InputTool.inString("Student Name:");
-        int year= InputTool.inInt("Year:");
+        String name= InputTool.getasString("Student Name:");
+        int year= InputTool.getasInt("Year:");
 
 
 
@@ -351,9 +351,9 @@ public class App {
     }
 
     private static void latepenalty(Connection connection) {
-        int id= InputTool.inInt("Student ID:");
-        int task= InputTool.inInt("Task ID:");
-        double points= InputTool.inDouble("Late penalty in points:");
+        int id= InputTool.getasInt("Student ID:");
+        int task= InputTool.getasInt("Task ID:");
+        double points= InputTool.getasDouble("Late penalty in points:");
 
 
         String callStoredProc = "{call dbo.latePenalty(?,?,?)}";
@@ -379,9 +379,9 @@ public class App {
     }
 
     private static void dropscore(Connection connection) {
-        int id= InputTool.inInt("Student ID:");
-        int task= InputTool.inInt("Task ID:");
-        double points= InputTool.inDouble("Scores will be dropped if under:");
+        int id= InputTool.getasInt("Student ID:");
+        int task= InputTool.getasInt("Task ID:");
+        double points= InputTool.getasDouble("Scores will be dropped if under:");
 
 
         String callStoredProc = "{call dbo.lowScore(?,?,?)}";
@@ -406,10 +406,10 @@ public class App {
 
     }
     private static void updatepartnerScore(Connection connection) {
-        int id= InputTool.inInt("First Student ID:");
-        int id2= InputTool.inInt("Second Student ID:");
-        int task= InputTool.inInt("Task ID:");
-        double points= InputTool.inDouble("Late penalty in points:");
+        int id= InputTool.getasInt("First Student ID:");
+        int id2= InputTool.getasInt("Second Student ID:");
+        int task= InputTool.getasInt("Task ID:");
+        double points= InputTool.getasDouble("Late penalty in points:");
 
 
         String callStoredProc = "{call dbo.updatePartnerScore(?,?,?,?)}";
@@ -438,51 +438,44 @@ public class App {
 }
     class InputTool {
 
-        //*******************************
-        //   support methods
-        //*******************************
-        //Method to display the user's prompt string
-        public static void printPrompt(String prompt) {
+
+        public static void prompt(String prompt) {
             System.out.print(prompt + " ");
             System.out.flush();
         }
 
-        //Method to make sure no data is available in the
-        //input stream
-        public static void inputFlush() {
-            int dummy;
-            int bAvail;
+
+        public static void flushInput() {
+            int temp;
+            int temp2;
 
             try {
                 while ((System.in.available()) != 0)
-                    dummy = System.in.read();
+                    temp = System.in.read();
             } catch (java.io.IOException e) {
                 System.out.println("Input error");
             }
         }
 
-        //********************************
-        //  data input methods for
-        //string, int, char, and double
-        //********************************
-        public static String inString(String prompt) {
-            inputFlush();
-            printPrompt(prompt);
-            return inString();
+
+        public static String getasString(String prompt) {
+            flushInput();
+            prompt(prompt);
+            return getasString();
         }
 
-        public static String inString() {
-            int aChar;
+        public static String getasString() {
+            int x;
             String s = "";
             boolean finished = false;
 
             while (!finished) {
                 try {
-                    aChar = System.in.read();
-                    if (aChar < 0 || (char) aChar == '\n')
+                    x = System.in.read();
+                    if (x < 0 || (char) x == '\n')
                         finished = true;
-                    else if ((char) aChar != '\r')
-                        s = s + (char) aChar; // Enter into string
+                    else if ((char) x != '\r')
+                        s = s + (char) x; // Enter into string
                 } catch (java.io.IOException e) {
                     System.out.println("Input error");
                     finished = true;
@@ -491,42 +484,29 @@ public class App {
             return s;
         }
 
-        public static int inInt(String prompt) {
+        public static int getasInt(String prompt) {
             while (true) {
-                inputFlush();
-                printPrompt(prompt);
+                flushInput();
+                prompt(prompt);
                 try {
-                    return Integer.valueOf(inString().trim()).intValue();
+                    return Integer.valueOf(getasString().trim()).intValue();
                 } catch (NumberFormatException e) {
-                    System.out.println("Invalid input. Not an integer");
+                    System.out.println("Invalid input");
                 }
             }
         }
 
-        public static char inChar(String prompt) {
-            int aChar = 0;
 
-            inputFlush();
-            printPrompt(prompt);
 
-            try {
-                aChar = System.in.read();
-            } catch (java.io.IOException e) {
-                System.out.println("Input error");
-            }
-            inputFlush();
-            return (char) aChar;
-        }
-
-        public static double inDouble(String prompt) {
+        public static double getasDouble(String prompt) {
             while (true) {
-                inputFlush();
-                printPrompt(prompt);
+                flushInput();
+                prompt(prompt);
                 try {
-                    return Double.valueOf(inString().trim()).doubleValue();
+                    return Double.valueOf(getasString().trim()).doubleValue();
                 } catch (NumberFormatException e) {
                     System.out
-                            .println("Invalid input. Not a floating point number");
+                            .println("Invalid input");
                 }
             }
         }
