@@ -70,7 +70,7 @@ public class App {
         System.out.println("|        6. Grade Partner Assignment");
         System.out.println("|        7. Drop Low Score         ");
         System.out.println("|        8. Update TA Course         ");
-        System.out.println("|        9. DELETE           ");
+        System.out.println("|        9. Delete failed students           ");
         System.out.println("|        10. DELETE           ");
         System.out.println("|        11. Save & Exit         |");
         System.out.println("|        12. Exit without Saving |");
@@ -102,6 +102,11 @@ public class App {
                 break;
             case 8:
             	updateTACourse(connection);
+            	break;
+            case 9:
+            	removeFailed(connection);
+            	break;
+            case 10:
             	break;
             case 11:
                 System.out.println("Exit selected");
@@ -163,6 +168,29 @@ public class App {
         catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    
+    private static void removeFailed(Connection connection) {
+        int lowScore= InputTool.inInt("Failing Score:");
+        String callStoredProc = "{call dbo.removeFails(?)}";
+        CallableStatement prepsStoredProc = null;
+        try {
+            prepsStoredProc = connection.prepareCall(callStoredProc);
+
+
+            // 1 parameters to stored proc start with a parameter index of 1
+            prepsStoredProc.setInt(1, lowScore);
+
+            prepsStoredProc.execute();
+            prepsStoredProc.close();
+            System.out.println("Removed failed students");
+
+        }
+        // Handle any errors that may have occurred.
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private static void getStudentAssignment(Connection connection) {
